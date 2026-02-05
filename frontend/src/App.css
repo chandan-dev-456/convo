@@ -1,0 +1,153 @@
+#root {
+  text-align: center;
+  overflow-x: hidden;
+}
+
+h1 {
+  color: azure;
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+p{
+  color: azure;
+  font-size: 1.9rem;
+  font-weight: 500;
+}
+.highlight {
+  color: #c77125; /* or any color */
+}
+.HomeLayout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.Hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.HomeImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+.navbar{
+  background-color: #000000;
+}
+.navbar .nav-link {
+  color: white;
+}
+.active-link {
+  color: #ff9f1c !important;
+}
+
+.nav-link:hover {
+  color: #ff9f1c !important;
+  text-shadow: 0 0 8px rgba(255, 159, 28, 0.8),
+               0 0 16px rgba(255, 159, 28, 0.6);
+}
+.navbar-shadow {
+  box-shadow: 0 4px 10px rgba(255, 157, 0, 0.15);
+}
+.logo {
+  height: 3em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+.tag-line{
+  margin-top: 10rem;
+}
+.meeting-Code{
+  border: none;
+  background-color: #333131;
+  box-shadow: none;
+  outline: none;
+  caret-color: white;
+  width: 16rem;
+  height: 3rem;
+  color: white;
+  letter-spacing: 3px;
+  text-align: left;
+  min-width: 0;
+}
+.join-options {
+  max-width: 420px;
+  margin: 0 auto;
+}
+input {
+  padding-left: 12px;
+}
+.new-meet-link{
+  color: #ff9f1c;
+}
+.new-meet-link:hover{
+  color: #ff9f1c;
+  text-shadow: 0 0 8px rgba(255, 159, 28, 0.8),
+               0 0 16px rgba(255, 159, 28, 0.6);
+}
+.hero-spacing {
+  margin-top: 2rem; /* mobile default */
+}
+/* Fade effect-------------------------------------- */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1.2s ease-in forwards;
+  overflow: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 375px) {
+  .hero-spacing {
+    margin-top: 4rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero-spacing {
+    margin-top: 10rem; /* LARGE screens */
+  }
+}
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #f6eeee;
+}
+

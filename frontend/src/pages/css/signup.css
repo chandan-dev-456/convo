@@ -1,0 +1,59 @@
+.glass-form {
+  background: rgba(255, 255, 255, 0.04); /* more transparent */
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(50px) saturate(180%);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    inset 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+/* Inputs */
+.glass-form .form-control {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #fff;
+}
+
+.glass-form .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.glass-form .form-control:focus {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.6);
+}
+
+/* Button */
+.glass-form .btn-primary {
+  background: linear-gradient(135deg, #ff9800, #ff5722);
+  border: none;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .glass-form {
+    width: 100% !important;
+    padding: 2rem;
+  }
+}
+.existing-account {
+  position: absolute;
+  bottom: 1.2rem;
+  right: 1.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.existing-account a {
+  color: orange;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.existing-account a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,17 @@
+.video-grid {
+  display: grid;
+  gap: 12px;
+  height: 50vh;
+}
+
+.video-grid.one {
+  grid-template-columns: 1fr;
+}
+
+.video-grid.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.video-grid.multi {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}

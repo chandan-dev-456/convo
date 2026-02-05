@@ -1,0 +1,60 @@
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  border-radius: 1rem;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #c78823;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* FULL PAGE BACKGROUND */
+body {
+  min-height: 100vh;
+  background: url("background.png") center / cover no-repeat fixed;
+  overflow-y: hidden;
+}
+
+@media (max-width: 768px) {
+  .HomeLayout {
+    flex-direction: column;
+  }
+
+  .Hero {
+    padding: 2rem;
+  }
+
+  .HomeImage img {
+    height: 20em;
+  }
+}
