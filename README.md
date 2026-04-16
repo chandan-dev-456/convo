@@ -10,7 +10,7 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 ## 🚀 Features
 
 - Peer-to-peer video calling using WebRTC
-- Multi-user mesh connection (no SFU)
+- Two-user mesh connection (no SFU)
 - Dynamic Google Meet–style video grid
 - Mute / Unmute audio per user
 - Video ON / OFF with track replacement
