@@ -21,17 +21,15 @@ function App() {
       <Toaster position="bottom-center" />
 
       <Routes>
-        {/* Main layout routes */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/guest" element={<JoinPage />} />
+          <Route path="/join" element={<JoinPage />} />
         </Route>
 
-        {/* Meeting layout routes */}
         <Route element={<MeetLayout />}>
-          <Route path="/meeting/:url" element={<VedioMeet />} />
+          <Route path="/meeting/:url"  element={<VedioMeet />} />
         </Route>
       </Routes>
     </AuthProvider>

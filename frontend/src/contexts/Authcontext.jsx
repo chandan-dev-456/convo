@@ -3,15 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useContext } from "react";
 
-// 1️⃣ CREATE THE CONTEXT (PIPE)
-export const AuthContext = createContext({});//ceate a context
+export const AuthContext = createContext({});
 
 const client = axios.create({
   baseURL: "http://localhost:8000/api/v1",
   withCredentials: true
 });
 
-// 2️⃣ CREATE THE PROVIDER (FILL THE PIPE)
 export const AuthProvider = ({ children }) => {
 
   const [userData, setUserData] = useState(null);
@@ -36,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       const response = await client.post("/login", formdata);
 
       if (response.status === 200 || response.status === 201) {
-        navigate("/guest",{ replace: true });
+        navigate("/join",{ replace: true });
         // console.log(response.data.token);
         return response.data.message;
       }

@@ -19,7 +19,7 @@ export default function HomeNav() {
         <ul className="navbar-nav ms-auto ">
           <li className="nav-item">
             <NavLink
-              to="/guest"
+              to="/join"
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active-link" : ""}`
               }

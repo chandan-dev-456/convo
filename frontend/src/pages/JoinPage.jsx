@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import { io } from "socket.io-client";
 export default function JoinPage() {
     const navigate = useNavigate();
 
@@ -7,7 +8,7 @@ export default function JoinPage() {
     const [meetingId, setMeetingId] = useState("");
     // const [link, setLink] = useState("");
 
-    const handleGuestJoin = () => {
+    const handleJoin = () => {
         if (!guestName || !meetingId) return;
 
         navigate(`/meeting/${meetingId}`, {
@@ -59,7 +60,7 @@ export default function JoinPage() {
                     <button
                         className="highlight rounded-3"
                         disabled={!guestName || !meetingId}
-                        onClick={handleGuestJoin}
+                        onClick={handleJoin}
                     >
                         Join as Guest
                     </button>

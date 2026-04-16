@@ -6,17 +6,13 @@ export default function VideoPlayer({ stream, muted, audio, video }) {
     useEffect(() => {
         if (!videoRef.current || !stream) return;
 
-        // 🔥 HARD RESET (THIS FIXES BLACK VIDEO)
-        videoRef.current.srcObject = null;
         videoRef.current.srcObject = stream;
-        videoRef.current.load();
-    }, [stream, video]);
-
+    }, [stream,video]);
 
     return (
         <div
             className="position-relative rounded shadow overflow-hidden"
-            style={{ width: "100%", height: "100%", backgroundColor: "#000" }}
+            style={{ width: "100%", height: "80vh", backgroundColor: "#000" }}
         >
             {video ? (
                 <video
@@ -27,7 +23,8 @@ export default function VideoPlayer({ stream, muted, audio, video }) {
                     style={{
                         width: "100%",
                         height: "100%",
-                        objectFit: "cover"
+                        objectFit: "cover",
+                        transform: "scaleX(-1)"
                     }}
                 />
             ) : (
@@ -47,3 +44,4 @@ export default function VideoPlayer({ stream, muted, audio, video }) {
         </div>
     );
 }
+

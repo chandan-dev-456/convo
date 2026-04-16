@@ -8,7 +8,7 @@ export default function Hero() {
                 <span style={{ color: "whitesmoke" }}> with your loved ones</span>
             </h1>
             <p>More than calls — it’s Convo</p>
-            <Link to="/guest">
+            <Link to="/join">
                 <button className="highlight rounded-3">Get Started</button>
             </Link>
 
