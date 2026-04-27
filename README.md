@@ -103,7 +103,7 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 
 ---
 1️⃣ Clone the repository
-
+```bash
 - git clone https://github.com/chandan-dev-456/convo.git
 - cd convo
 
@@ -113,7 +113,7 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 ### Create .env file:
   - PORT=8000
   #### Run server:
-  - npm run dev
+      - npm run dev
 
 3️⃣ Frontend Setup
 - cd frontend
