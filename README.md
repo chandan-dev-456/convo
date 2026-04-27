@@ -48,48 +48,48 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 ---
 
 ## 📁 Project Structure
-CONVO/
-│
-├── backend/
-│ ├── src/
-│ │ ├── controllers/
-│ │ │ ├── socketManager.js
-│ │ │ └── user.controller.js
-│ │ ├── middlewares/
-│ │ ├── models/
-│ │ ├── routes/
-│ │ │ └── users.route.js
-│ │ ├── app.js
-│ │ └── .env
-│ ├── package.json
-│
-├── frontend/
-│ ├── src/
-│ │ ├── assets/
-│ │ ├── components/
-│ │ │ └── VideoPlayer.jsx
-│ │ ├── contexts/
-│ │ │ └── Authcontext.jsx
-│ │ ├── Homepage/
-│ │ │ ├── Hero.jsx
-│ │ │ ├── HomeImage.jsx
-│ │ │ └── HomePage.jsx
-│ │ ├── layouts/
-│ │ ├── pages/
-│ │ │ ├── JoinPage.jsx
-│ │ │ ├── LogIn.jsx
-│ │ │ ├── SignUp.jsx
-│ │ │ └── VedioMeet.jsx
-│ │ ├── routes/
-│ │ │ └── ProtectedRoute.jsx
-│ │ ├── socket/
-│ │ │ └── socket.js
-│ │ ├── App.jsx
-│ │ ├── main.jsx
-│ │ └── Navigation.jsx
-│ ├── package.json
-│
-└── README.md
+-CONVO/
+- │
+- ├── backend/
+- │ ├── src/
+- │ │ ├── controllers/
+- │ │ │ ├── socketManager.js
+- │ │ │ └── user.controller.js
+- │ │ ├── middlewares/
+- │ │ ├── models/
+- │ │ ├── routes/
+- │ │ │ └── users.route.js
+- │ │ ├── app.js
+- │ │ └── .env
+- │ ├── package.json
+- │
+- ├── frontend/
+- │ ├── src/
+- │ │ ├── assets/
+- │ │ ├── components/
+- │ │ │ └── VideoPlayer.jsx
+- │ │ ├── contexts/
+- │ │ │ └── Authcontext.jsx
+- │ │ ├── Homepage/
+- │ │ │ ├── Hero.jsx
+- │ │ │ ├── HomeImage.jsx
+- │ │ │ └── HomePage.jsx
+- │ │ ├── layouts/
+- │ │ ├── pages/
+- │ │ │ ├── JoinPage.jsx
+- │ │ │ ├── LogIn.jsx
+- │ │ │ ├── SignUp.jsx
+- │ │ │ └── VedioMeet.jsx
+- │ │ ├── routes/
+- │ │ │ └── ProtectedRoute.jsx
+- │ │ ├── socket/
+- │ │ │ └── socket.js
+- │ │ ├── App.jsx
+- │ │ ├── main.jsx
+- │ │ └── Navigation.jsx
+- │ ├── package.json
+- │
+- └── README.md
 
 
 ---
@@ -108,21 +108,20 @@ CONVO/
 - cd convo
 
 2️⃣ Backend Setup
-cd backend
-npm install
-Create .env file:
-
-PORT=8000
-Run server:
-npm run dev
+- cd backend
+- npm install
+### Create .env file:
+  - PORT=8000
+  - Run server:
+  - npm run dev
 
 3️⃣ Frontend Setup
-cd frontend
-npm install
-npm run dev
+- cd frontend
+- npm install
+- npm run dev
 
 🔐 Authentication Flow
-Users can register/login
-Auth state stored using Context API
-Protected routes prevent unauthorized meeting access
-Redirect to login if not authenticated
+- Users can register/login
+- Auth state stored using Context API
+- Protected routes prevent unauthorized meeting access
+- Redirect to login if not authenticated
