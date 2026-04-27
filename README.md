@@ -43,7 +43,7 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 - Node.js
 - Express
 - Socket.IO
-- MongoDB (setup ready, auth optional)
+- MongoDB
 
 ---
 
@@ -111,9 +111,9 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 2️⃣ Backend Setup
 - cd backend
 - npm install
-### Create .env file:
+Create .env file:
   - PORT=8000
-  #### Run server:
+  - Run server:
       - npm run dev
 
 3️⃣ Frontend Setup
