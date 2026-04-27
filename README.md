@@ -102,7 +102,6 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 - Modern browser (Chrome / Firefox)
 
 ---
-## ⚙️ Setup Instructions
 ```bash
 1️⃣ Clone the repository
 
