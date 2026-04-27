@@ -10,14 +10,14 @@ import LogIn from "./pages/LogIn";
 import GuestPage from "./pages/VedioMeet";
 import VedioMeet from "./pages/VedioMeet";
 
-import { AuthProvider } from "./contexts/Authcontext";
-// import ProtectedRoute from "./routes/ProtectedRoute";
+
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 
 import "./App.css";
 
 function App() {
   return (
-    <AuthProvider>
+    <>
       <Toaster position="bottom-center" />
 
       <Routes>
@@ -28,11 +28,13 @@ function App() {
           <Route path="/join" element={<JoinPage />} />
         </Route>
 
-        <Route element={<MeetLayout />}>
-          <Route path="/meeting/:url"  element={<VedioMeet />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MeetLayout />}>
+            <Route path="/meeting/:roomId" element={<VedioMeet />} />
+          </Route>
         </Route>
       </Routes>
-    </AuthProvider>
+    </>
   );
 }
 

@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 const socket = io(import.meta.env.VITE_SOCKET_URL, { autoConnect: false });
 
 export default function VedioMeet() {
-  const { url } = useParams();
+  const { roomId } = useParams();
   const location = useLocation();
   const name = location.state?.guestName;
 
@@ -199,7 +199,7 @@ export default function VedioMeet() {
     socket.on("connect", () => {
       console.log("Socket connected with ID:", socket.id);
       socket.emit("join-room", {
-        roomId: url,
+        roomId: roomId,
         name: name
       });
     });
@@ -208,7 +208,7 @@ export default function VedioMeet() {
       console.log("Disconnecting socket");
       socket.disconnect();
     };
-  }, [url, name]);
+  }, [roomId, name]);
 
   // Handle user-joined
   useEffect(() => {
@@ -217,7 +217,7 @@ export default function VedioMeet() {
       targetRef.current = data.userId;
 
       if (!stream) {
-        console.log("⏳ Stream not ready, waiting...");
+        console.log("Stream not ready, waiting...");
         const waitForStream = setInterval(() => {
           if (stream && pcRef.current) {
             console.log(" Stream ready now, initiating call");
@@ -283,7 +283,7 @@ export default function VedioMeet() {
       pc.onconnectionstatechange = () => {
         console.log("Connection state changed:", pc.connectionState);
         if (pc.connectionState === "connected") {
-          console.log("✅ WebRTC connection established!");
+          console.log("WebRTC connection established!");
           setIsConnected(true);
         }
       };
@@ -324,7 +324,7 @@ export default function VedioMeet() {
   // handle answer
   useEffect(() => {
     socket.on("answer", async ({ answer, fromId }) => {
-      console.log("✅ ANSWER received from:", fromId);
+      console.log("ANSWER received from:", fromId);
       if (!pcRef.current) {
         console.error("No PC for answer");
         return;
@@ -369,7 +369,7 @@ export default function VedioMeet() {
     if (!socket) return;
 
     const handleUsers = (users) => {
-      console.log("📋 Participants list updated:", users);
+      console.log("Participants list updated:", users);
       setParticipants(users);
     };
 
@@ -409,7 +409,7 @@ export default function VedioMeet() {
 
   return (
     <div className="bg-dark text-white vh-100 p-3">
-      <h5 className="text-center">Meeting: {url}</h5>
+      <h5 className="text-center">Meeting: {roomId}</h5>
       
       {/* Debug info
       <div style={{ fontSize: "12px", textAlign: "center", marginBottom: "10px", color: "#ccc" }}>

@@ -1,9 +1,13 @@
-import { useState } from "react"
+import { useState ,useContext} from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { io } from "socket.io-client";
+import { AuthContext } from "../contexts/Authcontext";
+
 export default function JoinPage() {
     const navigate = useNavigate();
-
+    const context = useContext(AuthContext);
+    
+    const userData = context?.userData;
     const [guestName, setGuestName] = useState("");
     const [meetingId, setMeetingId] = useState("");
     // const [link, setLink] = useState("");
@@ -62,14 +66,19 @@ export default function JoinPage() {
                         disabled={!guestName || !meetingId}
                         onClick={handleJoin}
                     >
-                        Join as Guest
+                        Join
                     </button>
                 </div>
 
             </div>
 
             <p className="text-muted">_________________________________</p>
-            <Link to="/signup" className="text-decoration-none new-meet-link">Sign in to create meetings</Link>
+            {
+                userData ? 
+                null :
+                <Link to="/signup" className="text-decoration-none new-meet-link">Sign in to create meetings</Link>
+            }
+
         </div>
     )
 }

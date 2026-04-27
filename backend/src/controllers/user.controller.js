@@ -27,16 +27,11 @@ const login = async (req, res) => {
 
 const signup = async (req, res) => {
   try {
-    // 1️⃣ Extract data from request body
     const { name, username, password } = req.body;
 
-    // 3️⃣ Normalize username (IMPORTANT)
-    const normalizedUsername = username.toLowerCase().trim();
+    // const normalizedUsername = username.toLowerCase().trim();
 
-    // 4️⃣ Check if user already exists
-    const existingUser = await User.findOne({
-      username: normalizedUsername
-    });
+    const existingUser = await User.findOne({username});
 
     if (existingUser) {
       return res.status(409).json({
@@ -44,26 +39,21 @@ const signup = async (req, res) => {
       });
     }
 
-    // 5️⃣ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 6️⃣ Create new user
     const newUser = new User({
       name,
-      username: normalizedUsername,
+      username,
       password: hashedPassword
     });
 
-    // 7️⃣ Save user
     await newUser.save();
 
-    // 8️⃣ Send success response
     return res.status(201).json({
       message: "Registered successfully"
     });
 
   } catch (error) {
-    // 9️⃣ Handle duplicate key error (safety net)
     if (error.code === 11000) {
       return res.status(409).json({
         message: "User already exists"

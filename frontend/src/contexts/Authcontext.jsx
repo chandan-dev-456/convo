@@ -1,9 +1,9 @@
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
-export const AuthContext = createContext({});
+export const AuthContext = createContext(null);
 
 const client = axios.create({
   baseURL: "http://localhost:8000/api/v1",
@@ -12,16 +12,30 @@ const client = axios.create({
 
 export const AuthProvider = ({ children }) => {
 
-  const [userData, setUserData] = useState(null);
-
   const navigate = useNavigate();
+
+  const [userData, setUserData] = useState(null);
+  console.log("PROVIDER CONTEXT:", AuthContext);
+  useEffect(() => {
+    try {
+      const savedUser = localStorage.getItem("user");
+
+      if (savedUser && savedUser !== "undefined") {
+        const parsed = JSON.parse(savedUser);
+        setUserData(parsed);
+      }
+    } catch (error) {
+      console.error("Invalid user in localStorage");
+      localStorage.removeItem("user");
+    }
+  }, []);
 
   const handleRegister = async (formdata) => {
     try {
       const response = await client.post("/signup", formdata);
 
       if (response.status === 201) {
-        navigate("/login",{ replace: true });
+        navigate("/login", { replace: true });
         return response.data.message;
       }
     } catch (error) {
@@ -29,26 +43,40 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
+
   const handleLogin = async (formdata) => {
     try {
       const response = await client.post("/login", formdata);
 
       if (response.status === 200 || response.status === 201) {
-        navigate("/join",{ replace: true });
-        // console.log(response.data.token);
+        const user = response.data.user || {
+          name: formdata.username
+        };
+
+        setUserData(user);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        navigate("/join", { replace: true });
+
         return response.data.message;
       }
     } catch (error) {
       throw error.response?.data?.message || "Login failed";
     }
   };
-
+  const handleLogout = () => {
+    setUserData(null);
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   const data = {
     userData,
     setUserData,
     handleRegister,
-    handleLogin
+    handleLogin,
+    handleLogout
   };
 
   return (
