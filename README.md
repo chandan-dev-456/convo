@@ -102,8 +102,10 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 - Modern browser (Chrome / Firefox)
 
 ---
-1️⃣ Clone the repository
+## ⚙️ Setup Instructions
 ```bash
+1️⃣ Clone the repository
+
 - git clone https://github.com/chandan-dev-456/convo.git
 - cd convo
 
