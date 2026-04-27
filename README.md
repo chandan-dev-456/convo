@@ -48,21 +48,47 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 ---
 
 ## 📁 Project Structure
-convo/
+CONVO/
+│
 ├── backend/
 │ ├── src/
-│ ├── socketManager.js
-│ ├── .env.example
-│ └── package.json
+│ │ ├── controllers/
+│ │ │ ├── socketManager.js
+│ │ │ └── user.controller.js
+│ │ ├── middlewares/
+│ │ ├── models/
+│ │ ├── routes/
+│ │ │ └── users.route.js
+│ │ ├── app.js
+│ │ └── .env
+│ ├── package.json
 │
 ├── frontend/
 │ ├── src/
-│ ├── pages/VideoMeet.jsx
-│ ├── components/VideoPlayer.jsx
-│ ├── .env.example
-│ └── package.json
+│ │ ├── assets/
+│ │ ├── components/
+│ │ │ └── VideoPlayer.jsx
+│ │ ├── contexts/
+│ │ │ └── Authcontext.jsx
+│ │ ├── Homepage/
+│ │ │ ├── Hero.jsx
+│ │ │ ├── HomeImage.jsx
+│ │ │ └── HomePage.jsx
+│ │ ├── layouts/
+│ │ ├── pages/
+│ │ │ ├── JoinPage.jsx
+│ │ │ ├── LogIn.jsx
+│ │ │ ├── SignUp.jsx
+│ │ │ └── VedioMeet.jsx
+│ │ ├── routes/
+│ │ │ └── ProtectedRoute.jsx
+│ │ ├── socket/
+│ │ │ └── socket.js
+│ │ ├── App.jsx
+│ │ ├── main.jsx
+│ │ └── Navigation.jsx
+│ ├── package.json
 │
-├── .gitignore
 └── README.md
 
 
@@ -76,9 +102,27 @@ convo/
 - Modern browser (Chrome / Firefox)
 
 ---
+1️⃣ Clone the repository
 
-### 1️⃣ Clone the repository
-
-```bash
-git clone https://github.com/<your-username>/convo.git
+git clone https://github.com/chandan-dev-456/convo.git
 cd convo
+
+2️⃣ Backend Setup
+cd backend
+npm install
+Create .env file:
+
+PORT=8000
+Run server:
+npm run dev
+
+3️⃣ Frontend Setup
+cd frontend
+npm install
+npm run dev
+
+🔐 Authentication Flow
+Users can register/login
+Auth state stored using Context API
+Protected routes prevent unauthorized meeting access
+Redirect to login if not authenticated
