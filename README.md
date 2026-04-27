@@ -114,7 +114,7 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 Create .env file:
   - PORT=8000
   - Run server:
-      - npm run dev
+      - nodemon app.js
 
 3️⃣ Frontend Setup
 - cd frontend
