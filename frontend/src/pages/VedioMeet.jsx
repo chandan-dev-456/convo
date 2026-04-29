@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import VideoPlayer from "../components/VedioPlayer";
 import { io } from "socket.io-client";
-
 const socket = io(import.meta.env.VITE_SOCKET_URL, { autoConnect: false });
 
 export default function VedioMeet() {
@@ -23,6 +22,9 @@ export default function VedioMeet() {
 
   const iceQueue = useRef([]);
   const pendingOffersRef = useRef([]);
+
+  const [participants, setParticipants] = useState([]);
+  const [showParticipants, setShowParticipants] = useState(false);
 
   useEffect(() => {
     async function getMedia() {
@@ -47,7 +49,10 @@ export default function VedioMeet() {
     const track = stream.getVideoTracks()[0];
     track.enabled = !track.enabled;
     setVideoOn(track.enabled);
-    console.log("Video toggled:", track.enabled);
+
+    setParticipants(prev => prev.map(p =>
+      p.id === socket.id ? { ...p, video: track.enabled } : p
+    ));
 
     if (isConnected && targetRef.current) {
       socket.emit("media-update", {
@@ -65,7 +70,10 @@ export default function VedioMeet() {
     const audioTrack = stream.getAudioTracks()[0];
     audioTrack.enabled = !audioTrack.enabled;
     setAudioOn(audioTrack.enabled);
-    console.log("Audio toggled:", audioTrack.enabled);
+
+    setParticipants(prev => prev.map(p =>
+      p.id === socket.id ? { ...p, audio: audioTrack.enabled } : p
+    ));
 
     if (isConnected && targetRef.current) {
       socket.emit("media-update", {
@@ -96,12 +104,18 @@ export default function VedioMeet() {
   useEffect(() => {
     socket.on("media-update", ({ type, value, fromId }) => {
       if (fromId === socket.id) return;
-      console.log("Media update received:", type, value);
+
       if (type === "audio") {
         setRemoteMedia(prev => ({ ...prev, audio: value }));
+        setParticipants(prev => prev.map(p =>
+          p.id === fromId ? { ...p, audio: value } : p
+        ));
       }
       if (type === "video") {
         setRemoteMedia(prev => ({ ...prev, video: value }));
+        setParticipants(prev => prev.map(p =>
+          p.id === fromId ? { ...p, video: value } : p
+        ));
       }
     });
 
@@ -111,46 +125,31 @@ export default function VedioMeet() {
   }, []);
 
   const initiateCall = async (targetUserId) => {
-    console.log("Initiating call to:", targetUserId);
-    console.log("PC Ref current:", !!pcRef.current);
-    console.log("Stream available:", !!stream);
-    
-    if (!pcRef.current || !stream) {
-      console.log("Cannot initiate call - PC or stream not ready");
-      return;
-    }
+    if (!pcRef.current || !stream) return;
 
     const pc = pcRef.current;
-    console.log("Current senders count:", pc.getSenders().length);
 
     if (pc.getSenders().length === 0) {
-      console.log("Adding tracks to peer connection");
       stream.getTracks().forEach(track => {
-        console.log("Adding track:", track.kind);
         pc.addTrack(track, stream);
       });
     }
 
-    console.log("Creating offer...");
     const offer = await pc.createOffer();
-    console.log("Offer created:", offer);
     await pc.setLocalDescription(offer);
-    console.log("Local description set");
 
     socket.emit("offer", {
       targetId: targetUserId,
       offer,
       fromId: socket.id
     });
-    console.log("Offer emitted to:", targetUserId);
   };
 
   const processPendingOffers = async () => {
     if (pendingOffersRef.current.length > 0 && pcRef.current && stream) {
-      console.log("Processing pending offers:", pendingOffersRef.current.length);
       const offers = [...pendingOffersRef.current];
       pendingOffersRef.current = [];
-      
+
       for (const { offer, fromId } of offers) {
         await handleOffer(offer, fromId);
       }
@@ -158,22 +157,17 @@ export default function VedioMeet() {
   };
 
   const handleOffer = async (offer, fromId) => {
-    console.log("Handling offer from:", fromId);
     targetRef.current = fromId;
-
     const pc = pcRef.current;
-    
+
     if (pc.getSenders().length === 0) {
-      console.log("Adding tracks to PC");
       stream.getTracks().forEach(track => {
         pc.addTrack(track, stream);
       });
     }
 
     await pc.setRemoteDescription(offer);
-    console.log("Remote description set");
 
-    // Process queued ICE candidates
     for (const c of iceQueue.current) {
       await pc.addIceCandidate(c);
     }
@@ -181,23 +175,18 @@ export default function VedioMeet() {
 
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
-    console.log("Answer created and set");
 
     socket.emit("answer", {
       targetId: fromId,
       answer,
       fromId: socket.id
     });
-    console.log("Answer emitted to:", fromId);
   };
 
-  // Socket connection
   useEffect(() => {
-    console.log("Connecting socket...");
     socket.connect();
 
     socket.on("connect", () => {
-      console.log("Socket connected with ID:", socket.id);
       socket.emit("join-room", {
         roomId: roomId,
         name: name
@@ -205,22 +194,17 @@ export default function VedioMeet() {
     });
 
     return () => {
-      console.log("Disconnecting socket");
       socket.disconnect();
     };
   }, [roomId, name]);
 
-  // Handle user-joined
   useEffect(() => {
     socket.on("user-joined", async (data) => {
-      console.log("🔵 user-joined event received:", data.userId);
       targetRef.current = data.userId;
 
       if (!stream) {
-        console.log("Stream not ready, waiting...");
         const waitForStream = setInterval(() => {
           if (stream && pcRef.current) {
-            console.log(" Stream ready now, initiating call");
             clearInterval(waitForStream);
             initiateCall(data.userId);
           }
@@ -229,10 +213,7 @@ export default function VedioMeet() {
       }
 
       if (pcRef.current && stream) {
-        console.log(" Stream and PC ready, initiating call immediately");
         await initiateCall(data.userId);
-      } else {
-        console.log(" PC or stream not ready:", { pc: !!pcRef.current, stream: !!stream });
       }
     });
 
@@ -242,13 +223,9 @@ export default function VedioMeet() {
   }, [stream]);
 
   useEffect(() => {
-    if (!stream) {
-      console.log("No stream yet, skipping PC creation");
-      return;
-    }
+    if (!stream) return;
 
     if (!pcRef.current) {
-      console.log("Creating new RTCPeerConnection");
       const pc = new RTCPeerConnection({
         iceServers: [
           { urls: "stun:stun.l.google.com:19302" },
@@ -257,21 +234,17 @@ export default function VedioMeet() {
       });
       pcRef.current = pc;
 
-      console.log("Adding tracks to PC");
       stream.getTracks().forEach(track => {
-        console.log("Adding track to PC:", track.kind);
         pc.addTrack(track, stream);
       });
 
       pc.ontrack = (event) => {
-        console.log("🎥 REMOTE STREAM RECEIVED!", event.streams[0]);
         setRemoteStream(event.streams[0]);
         setIsConnected(true);
       };
 
       pc.onicecandidate = (event) => {
         if (event.candidate && targetRef.current) {
-          console.log("ICE candidate generated, sending to:", targetRef.current);
           socket.emit("ice-candidate", {
             targetId: targetRef.current,
             candidate: event.candidate,
@@ -281,22 +254,15 @@ export default function VedioMeet() {
       };
 
       pc.onconnectionstatechange = () => {
-        console.log("Connection state changed:", pc.connectionState);
         if (pc.connectionState === "connected") {
-          console.log("WebRTC connection established!");
           setIsConnected(true);
         }
-      };
-
-      pc.oniceconnectionstatechange = () => {
-        console.log("ICE connection state:", pc.iceConnectionState);
       };
     }
     processPendingOffers();
 
     return () => {
       if (pcRef.current) {
-        console.log("Closing peer connection");
         pcRef.current.close();
         pcRef.current = null;
       }
@@ -305,33 +271,24 @@ export default function VedioMeet() {
 
   useEffect(() => {
     socket.on("offer", async ({ offer, fromId }) => {
-      console.log("OFFER received from:", fromId);
-      
       if (!pcRef.current || !stream) {
-        console.log("PC or stream not ready, storing offer for later");
         pendingOffersRef.current.push({ offer, fromId });
         return;
       }
-      
+
       await handleOffer(offer, fromId);
     });
 
     return () => {
       socket.off("offer");
     };
-  }, [stream]); 
+  }, [stream]);
 
-  // handle answer
   useEffect(() => {
     socket.on("answer", async ({ answer, fromId }) => {
-      console.log("ANSWER received from:", fromId);
-      if (!pcRef.current) {
-        console.error("No PC for answer");
-        return;
-      }
+      if (!pcRef.current) return;
       await pcRef.current.setRemoteDescription(answer);
-      console.log("Remote description set from answer");
-      
+
       for (const c of iceQueue.current) {
         await pcRef.current.addIceCandidate(c);
       }
@@ -343,16 +300,12 @@ export default function VedioMeet() {
     };
   }, []);
 
-  // Handle ICE candidates
   useEffect(() => {
     socket.on("ice-candidate", async ({ candidate, fromId }) => {
-      console.log("ICE candidate received from:", fromId);
       if (candidate && pcRef.current) {
         if (pcRef.current.remoteDescription) {
-          console.log("Adding ICE candidate immediately");
           await pcRef.current.addIceCandidate(candidate);
         } else {
-          console.log("Queuing ICE candidate");
           iceQueue.current.push(candidate);
         }
       }
@@ -363,14 +316,16 @@ export default function VedioMeet() {
     };
   }, []);
 
-  // Users list
-  const [participants, setParticipants] = useState([]);
   useEffect(() => {
     if (!socket) return;
 
     const handleUsers = (users) => {
-      console.log("Participants list updated:", users);
-      setParticipants(users);
+      const usersWithMedia = users.map(user => ({
+        ...user,
+        audio: user.id === socket.id ? audioOn : true,
+        video: user.id === socket.id ? videoOn : true
+      }));
+      setParticipants(usersWithMedia);
     };
 
     socket.on("existing-users", handleUsers);
@@ -378,17 +333,16 @@ export default function VedioMeet() {
     return () => {
       socket.off("existing-users", handleUsers);
     };
-  }, [socket]);
+  }, [socket, audioOn, videoOn]);
 
-  // Handle user leaving
   useEffect(() => {
     socket.on("user-left", ({ userId }) => {
-      console.log("User left:", userId);
       if (targetRef.current === userId) {
         setRemoteStream(null);
         setIsConnected(false);
         targetRef.current = null;
       }
+      setParticipants(prev => prev.filter(p => p.id !== userId));
     });
 
     return () => {
@@ -398,39 +352,41 @@ export default function VedioMeet() {
 
   const otherUser = participants.find(user => user.id !== socket.id);
 
-  // Debug render info
-  console.log("Render state:", {
-    hasStream: !!stream,
-    hasRemoteStream: !!remoteStream,
-    participantsCount: participants.length,
-    targetId: targetRef.current,
-    isConnected
-  });
+  const getVideoGridClass = () => {
+    const videoCount = [stream ? 1 : 0, remoteStream ? 1 : 0].filter(Boolean).length;
+    if (videoCount === 1) return "video-grid one";
+    if (videoCount === 2) return "video-grid two";
+    return "video-grid multi";
+  };
 
   return (
-    <div className="bg-dark text-white vh-100 p-3">
-      <h5 className="text-center">Meeting: {roomId}</h5>
-      
-      {/* Debug info
-      <div style={{ fontSize: "12px", textAlign: "center", marginBottom: "10px", color: "#ccc" }}>
-        Socket ID: {socket.id} | Remote Stream: {remoteStream ? "YES" : "NO"} | 
-        Connected: {isConnected ? "YES" : "NO"} | Participants: {participants.length}
-      </div> */}
+    <div className="bg-dark text-white min-vh-100" style={{ paddingBottom: "90px" }}>
 
-      <div style={{ display: "flex", height: "80vh", gap: "12px" }}>
+      <div className="position-sticky top-0 bg-dark z-3 px-2 px-sm-3 py-2 shadow-sm" style={{ zIndex: 1020 }}>
+        <div className="d-flex justify-content-between align-items-center">
+          <h6 className="mb-0 text-truncate" style={{ fontSize: "14px" }}>
+            Meeting: {roomId}
+          </h6>
+          <button
+            onClick={() => setShowParticipants(!showParticipants)}
+            className="btn btn-sm btn-outline-light position-relative"
+            style={{ fontSize: "12px" }}
+          >
+            👥 {participants.length}
+            {!showParticipants && participants.length > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                <span className="visually-hidden">New</span>
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
 
-        {/* LEFT SIDE VIDEO */}
-        <div
-          style={{
-            flex: 3,
-            display: "grid",
-            gridTemplateColumns: remoteStream ? "1fr 1fr" : "1fr",
-            gap: "10px",
-            height: "100%"
-          }}
-        >
-          {/*VIDEO */}
-          <div style={{ position: "relative" }}>
+      {/* main content */}
+      <div className="px-2 px-sm-3 mt-2">
+        <div className={getVideoGridClass()}>
+          {/* Local Video */}
+          <div className="position-relative rounded shadow h-100">
             {stream ? (
               <VideoPlayer
                 stream={stream}
@@ -439,130 +395,369 @@ export default function VedioMeet() {
                 video={videoOn}
               />
             ) : (
-              <div style={{ background: "#333", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                Loading camera...
+              <div className="d-flex align-items-center justify-content-center h-100 bg-dark rounded">
+                <div className="text-center">
+                  <div className="spinner-border text-light mb-2" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                  <p className="mb-0 small text-muted">Loading camera...</p>
+                </div>
               </div>
             )}
-            <div style={{
-              position: "absolute",
-              top: "10px",
-              left: "10px",
-              backgroundColor: "rgba(0,0,0,0.6)",
-              padding: "4px 8px",
-              borderRadius: "6px",
-              fontSize: "14px"
-            }}>
-              {name} (You)
+            <div className="position-absolute bg-dark bg-opacity-75 px-2 py-1 rounded small" style={{ bottom: "10px", left: "10px", zIndex: 2 }}>
+              {name} (You) {!audioOn && "🔇"} {!videoOn && "📹"}
             </div>
           </div>
 
-          {remoteStream ? (
-            <div style={{ position: "relative" }}>
-              <VideoPlayer 
-                stream={remoteStream} 
+          {/* Remote Video */}
+          {remoteStream && (
+            <div className="position-relative rounded shadow h-100">
+              <VideoPlayer
+                stream={remoteStream}
                 muted={false}
                 audio={remoteMedia.audio}
                 video={remoteMedia.video}
               />
-              {!remoteMedia.audio && (
-                <div style={{
-                  position: "absolute",
-                  top: "10px",
-                  right: "10px",
-                  background: "rgba(0,0,0,0.6)",
-                  padding: "4px 6px",
-                  borderRadius: "4px"
-                }}>
-                  🔇
-                </div>
-              )}
-              {!remoteMedia.video && (
-                <div style={{
-                  position: "absolute",
-                  bottom: "10px",
-                  left: "10px",
-                  background: "rgba(0,0,0,0.6)",
-                  padding: "4px 8px",
-                  borderRadius: "6px"
-                }}>
-                  Camera Off
-                </div>
-              )}
-              <div style={{
-                position: "absolute",
-                top: "10px",
-                left: "10px",
-                backgroundColor: "rgba(0,0,0,0.6)",
-                padding: "4px 8px",
-                borderRadius: "6px",
-                fontSize: "14px"
-              }}>
+              <div className="position-absolute bg-dark bg-opacity-75 px-2 py-1 rounded small" style={{ bottom: "10px", left: "10px", zIndex: 2 }}>
                 {otherUser?.name || "Other User"}
+                {!remoteMedia.audio && " 🔇"}
+                {!remoteMedia.video && " 📹"}
               </div>
             </div>
-          ) : (
-            <div style={{ 
-              background: "#333", 
-              height: "100%", 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "center",
-              borderRadius: "10px"
-            }}>
-              Waiting for other user to join...
+          )}
+
+          {/* Waiting State */}
+          {!remoteStream && participants.length > 1 && (
+            <div className="d-flex align-items-center justify-content-center h-100 bg-secondary rounded shadow">
+              <div className="text-center">
+                <div className="spinner-grow text-light mb-2" role="status">
+                  <span className="visually-hidden">Waiting...</span>
+                </div>
+                <p className="mb-0 small">Waiting for {otherUser?.name || 'other user'} to join...</p>
+              </div>
             </div>
           )}
         </div>
+      </div>
 
-        {/* RIGHT SIDE USERS LIST */}
-        <div
-          style={{
-            flex: 1,
-            backgroundColor: "#1e1e1e",
-            borderRadius: "10px",
-            padding: "10px",
-            overflowY: "auto"
-          }}
-        >
-          <h6 className="text-center mb-3">Participants ({participants.length})</h6>
-          {participants?.map((user) => (
-            <div
-              key={user.id}
-              style={{
-                padding: "8px",
-                marginBottom: "6px",
-                backgroundColor: "#2c2c2c",
-                borderRadius: "6px"
-              }}
-            >
-              {user.name} {user.id === socket.id ? "(You)" : ""}
-              {user.id === targetRef.current && " 📹"}
+      {/* Mobile Participants Drawer */}
+      {showParticipants && (
+        <>
+          <div
+            className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-75"
+            style={{ zIndex: 1040 }}
+            onClick={() => setShowParticipants(false)}
+          />
+
+          <div
+            className="position-fixed bottom-0 start-0 end-0 bg-dark rounded-top-3 shadow-lg"
+            style={{
+              zIndex: 1050,
+              maxHeight: "60vh",
+              animation: "slideUp 0.3s ease-out"
+            }}
+          >
+            <div className="d-flex justify-content-between align-items-center p-3 border-bottom border-secondary">
+              <h6 className="mb-0">Participants ({participants.length})</h6>
+              <button
+                onClick={() => setShowParticipants(false)}
+                className="btn-close btn-close-white"
+              />
             </div>
-          ))}
+
+            <div style={{ maxHeight: "calc(60vh - 60px)", overflowY: "auto" }}>
+              {participants.map((user) => (
+                <div
+                  key={user.id}
+                  className="d-flex justify-content-between align-items-center p-3 border-bottom border-secondary"
+                >
+                  <div className="d-flex align-items-center gap-2 flex-grow-1">
+                    <div className={`rounded-circle bg-${user.id === socket.id ? 'warning' : 'info'} bg-opacity-50`}
+                      style={{ width: "10px", height: "10px" }}></div>
+                    <span className="small">
+                      {user.name}
+                      {user.id === socket.id && <span className="text-warning ms-1">(You)</span>}
+                    </span>
+                  </div>
+
+                  <div className="d-flex gap-3">
+                    {user.id !== socket.id && (
+                      <>
+                        {user.audio !== undefined && (
+                          user.audio ?
+                            <span className="text-success" title="Microphone on">🎤</span> :
+                            <span className="text-muted" title="Microphone off">🔇</span>
+                        )}
+                        {user.video !== undefined && (
+                          user.video ?
+                            <span className="text-info" title="Camera on">📹</span> :
+                            <span className="text-muted" title="Camera off">📹❌</span>
+                        )}
+                      </>
+                    )}
+
+                    {user.id === targetRef.current && (
+                      <span className="badge bg-info rounded-pill" style={{ fontSize: "10px" }}>Active</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Desktop Sidebar */}
+      {showParticipants && window.innerWidth >= 992 && (
+        <div className="position-fixed top-0 end-0 h-100 bg-dark shadow-lg" style={{ width: "280px", zIndex: 1030, top: "60px" }}>
+          <div className="p-3">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h6 className="mb-0">Participants ({participants.length})</h6>
+              <button
+                onClick={() => setShowParticipants(false)}
+                className="btn-close btn-close-white"
+              />
+            </div>
+
+            <div style={{ maxHeight: "calc(100vh - 120px)", overflowY: "auto" }}>
+              {participants.map((user) => (
+                <div
+                  key={user.id}
+                  className="d-flex justify-content-between align-items-center p-2 mb-2 rounded bg-secondary bg-opacity-25"
+                >
+                  <div className="d-flex align-items-center gap-2 flex-grow-1">
+                    <div className={`rounded-circle bg-${user.id === socket.id ? 'warning' : 'info'} bg-opacity-50`}
+                      style={{ width: "8px", height: "8px" }}></div>
+                    <span className="small text-truncate" style={{ maxWidth: "120px" }}>
+                      {user.name}
+                      {user.id === socket.id && <span className="text-warning ms-1">(You)</span>}
+                    </span>
+                  </div>
+
+                  <div className="d-flex gap-2">
+                    {user.id !== socket.id && (
+                      <>
+                        {user.audio !== undefined && !user.audio && (
+                          <span className="text-muted small" title="Microphone off">🔇</span>
+                        )}
+                        {user.video !== undefined && !user.video && (
+                          <span className="text-muted small" title="Camera off">📹❌</span>
+                        )}
+                      </>
+                    )}
+
+                    {user.id === targetRef.current && (
+                      <span className="badge bg-info rounded-pill" style={{ fontSize: "10px" }}>📹</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Control Buttons */}
+      <div className="position-fixed bottom-0 start-0 end-0 p-3" style={{ zIndex: 1020 }}>
+        <div className="d-flex justify-content-center gap-3">
+          <button
+            onClick={toggleVideo}
+            className={`btn rounded-circle shadow-lg ${videoOn ? 'btn-outline-light' : 'btn-danger'}`}
+            style={{ width: "50px", height: "50px", fontSize: "20px" }}
+          >
+            {videoOn ? "📹" : "🚫📹"}
+          </button>
+
+          <button
+            onClick={toggleAudio}
+            className={`btn rounded-circle shadow-lg ${audioOn ? 'btn-outline-light' : 'btn-danger'}`}
+            style={{ width: "50px", height: "50px", fontSize: "20px" }}
+          >
+            {audioOn ? "🎤" : "🔇"}
+          </button>
+
+          <button
+            onClick={endMeet}
+            className="btn btn-danger rounded-circle shadow-lg"
+            style={{ width: "50px", height: "50px", fontSize: "20px" }}
+          >
+            📞
+          </button>
+        </div>
+
+        <div className="d-flex justify-content-center gap-4 mt-2 d-sm-none">
+          <small className="text-white-50">{videoOn ? "Video" : "Off"}</small>
+          <small className="text-white-50">{audioOn ? "Audio" : "Mute"}</small>
+          <small className="text-danger">End</small>
         </div>
       </div>
+      <style jsx>{`
+  .video-grid {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+  }
 
-      {/* CONTROLS */}
-      <div
-        className="d-flex justify-content-center gap-3"
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 10
-        }}
-      >
-        <button className="btn btn-warning" onClick={toggleVideo}>
-          {videoOn ? "Turn Video Off 📹" : "Turn Video On 🎥"}
-        </button>
-        <button className="btn btn-warning" onClick={toggleAudio}>
-          {audioOn ? "Mute 🔇" : "Unmute 🔊"}
-        </button>
-        <button className="btn btn-danger" onClick={endMeet}>
-          End Call
-        </button>
-      </div>
+  .video-grid.one {
+  grid-template-columns: 1fr;
+  min-height: 400px;
+  max-height: 70vh;
+}
+
+.video-grid.one > div {
+  min-height: 400px;
+  max-height: 70vh;
+}
+
+  .video-grid.two {
+    grid-template-columns: repeat(2, 1fr);
+    min-height: 65vh;
+  }
+
+  .video-grid.two > div {
+    min-height: 65vh;
+  }
+
+  .video-grid.multi {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .video-grid > div {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  /* Desktop Large Screens */
+  @media (min-width: 1200px) {
+    .video-grid.one {
+  grid-template-columns: 1fr;
+  min-height: 400px;
+  max-height: 70vh;
+}
+
+.video-grid.one > div {
+  min-height: 400px;
+  max-height: 70vh;
+}
+    
+    .video-grid.two {
+      min-height: 70vh;
+    }
+    
+    .video-grid.two > div {
+      min-height: 70vh;
+    }
+  }
+
+  /* Desktop Medium Screens */
+  @media (min-width: 992px) and (max-width: 1199px) {
+    .video-grid.one {
+  grid-template-columns: 1fr;
+  min-height: 400px;
+  max-height: 70vh;
+}
+
+.video-grid.one > div {
+  min-height: 400px;
+  max-height: 70vh;
+}
+    
+    .video-grid.two {
+      min-height: 65vh;
+    }
+    
+    .video-grid.two > div {
+      min-height: 65vh;
+    }
+  }
+
+  /* Tablet Screens */
+  @media (min-width: 768px) and (max-width: 991px) {
+    .video-grid.one {
+  grid-template-columns: 1fr;
+  min-height: 400px;
+  max-height: 70vh;
+}
+
+.video-grid.one > div {
+  min-height: 400px;
+  max-height: 70vh;
+}
+    
+    .video-grid.two {
+      min-height: 50vh;
+    }
+    
+    .video-grid.two > div {
+      min-height: 50vh;
+    }
+    
+    .video-grid {
+      gap: 10px;
+    }
+  }
+
+  /* Mobile Screens */
+  @media (max-width: 767px) {
+    .video-grid.one {
+  grid-template-columns: 1fr;
+  min-height: 400px;
+  max-height: 70vh;
+}
+
+.video-grid.one > div {
+  min-height: 400px;
+  max-height: 70vh;
+}
+    
+    .video-grid.two {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(2, 1fr);
+      min-height: auto;
+      gap: 8px;
+    }
+    
+    .video-grid.two > div {
+      min-height: 40vh;
+    }
+    
+    .video-grid {
+      gap: 8px;
+    }
+  }
+
+  /* Small Mobile Screens */
+  @media (max-width: 480px) {
+    .video-grid.one {
+  grid-template-columns: 1fr;
+  min-height: 400px;
+  max-height: 70vh;
+}
+
+.video-grid.one > div {
+  min-height: 400px;
+  max-height: 70vh;
+}
+    
+    .video-grid.two > div {
+      min-height: 35vh;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .z-3 {
+    z-index: 1030;
+  }
+`}</style>
     </div>
   );
 }

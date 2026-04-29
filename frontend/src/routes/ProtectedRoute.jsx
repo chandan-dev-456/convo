@@ -1,11 +1,9 @@
-import { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { AuthContext } from "../contexts/Authcontext";
 
 export default function ProtectedRoute() {
-  const { userData } = useContext(AuthContext);
-
-  if (!userData) {
+  const user = localStorage.getItem("user");
+  
+  if (!user || user === "undefined") {
     return <Navigate to="/login" replace />;
   }
 

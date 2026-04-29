@@ -10,7 +10,6 @@ export default function JoinPage() {
     const userData = context?.userData;
     const [guestName, setGuestName] = useState("");
     const [meetingId, setMeetingId] = useState("");
-    // const [link, setLink] = useState("");
 
     const handleJoin = () => {
         if (!guestName || !meetingId) return;
@@ -35,7 +34,6 @@ export default function JoinPage() {
                 </p>
             </div>
             <div className="join-options row mt-5 g-3">
-                {/* Guest Name */}
                 <div className="col-12">
                     <input
                         placeholder="Enter your name"
@@ -47,7 +45,6 @@ export default function JoinPage() {
                     />
                 </div>
 
-                {/* Meeting ID */}
                 <div className="col-md-8">
                     <input
                         placeholder="Enter meeting link"
@@ -59,7 +56,6 @@ export default function JoinPage() {
                     />
                 </div>
 
-                {/* Join Button */}
                 <div className="col-md-4 d-grid" style={{fontSize:"0.9em"}}>
                     <button
                         className="highlight rounded-3"
