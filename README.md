@@ -113,8 +113,9 @@ This project focuses on **correct WebRTC signaling architecture** rather than UI
 - npm install
 Create .env file:
   - PORT=8000
-  - Run server:
-      - nodemon app.js
+  - MONGO_URI=<Your MongoDBURL>
+- Run server:
+      - nodemon app.js (If nodemon not found install it globally "npm install -g nodemon")
 
 3️⃣ Frontend Setup
 - cd frontend
