@@ -714,18 +714,19 @@ export default function VedioMeet() {
           /* Small Mobile Screens */
           @media (max-width: 480px) {
             .video-grid.one {
-          grid-template-columns: 1fr;
-          min-height: 400px;
-          max-height: 70vh;
-        }
-
-        .video-grid.one > div {
-            min-height: 400px;
-            max-height: 70vh;
-          }
+              grid-template-columns: 1fr;
+              min-height: 400px;
+              max-height: 70vh;
+            }
+  
+          .video-grid.one > div {
+              min-height: 400px;
+              max-height: 70vh;
+            }
             
-            .video-grid.two > div {
-              min-height: 35vh;
+           .video-grid.two > div {
+              height: 28vh;
+              min-height: 180px;
             }
         }
         @keyframes slideUp {
