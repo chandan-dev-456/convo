@@ -382,7 +382,7 @@ export default function VedioMeet() {
         </div>
       </div>
 
-      <div className="px-2 px-sm-3 mt-2">
+      <div className="px-2 px-sm-3 mt-2 flex-grow-1" style={{ overflow: "hidden" }}>
         <div className={getVideoGridClass()}>
           {/* local video */}
           <div className="position-relative rounded shadow h-100 w-100">
