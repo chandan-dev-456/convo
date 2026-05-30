@@ -564,7 +564,7 @@ export default function VedioMeet() {
             className={`btn rounded-circle shadow-lg ${videoOn ? 'btn-outline-light' : 'btn-danger'}`}
             style={{ width: "50px", height: "50px", fontSize: "20px" }}
           >
-            {videoOn ? "📹" : "🚫📹"}
+            {videoOn ? "📹" : "🚫"}
           </button>
 
           <button
