@@ -360,7 +360,7 @@ export default function VedioMeet() {
   };
 
   return (
-    <div className="bg-dark text-white" style={{ height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div className="bg-dark text-white" style={{ height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" ,paddingBottom: "0"}}>
 
       <div className="bg-dark px-2 px-sm-3 py-2 shadow-sm flex-shrink-0" style={{ zIndex: 1020 }}>
         <div className="d-flex justify-content-between align-items-center">
@@ -630,9 +630,10 @@ export default function VedioMeet() {
         }
         
         /* Mobile Screens */
-        @media (max-width: 767px) {
+        @media (max-width: 768px) {
           .video-grid {
             gap: 8px;
+            margin-bottom: 10px; /* Added margin */
           }
           
           .video-grid.one {
@@ -650,8 +651,19 @@ export default function VedioMeet() {
             grid-template-columns: 1fr;
             gap: 12px;
           }
+
+          .bg-dark:last-child {
+            padding-bottom: 25px !important;
+          }
         }
         
+        /* Specific fix for mobile browsers */
+        @media (max-width: 768px) and (orientation: portrait) {
+          .flex-shrink-0:last-child {
+            padding-bottom: calc(20px + constant(safe-area-inset-bottom));
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+          }
+        }
         @keyframes slideUp {
           from {
             transform: translateY(100%);
