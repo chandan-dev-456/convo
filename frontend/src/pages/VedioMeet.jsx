@@ -360,9 +360,9 @@ export default function VedioMeet() {
   };
 
   return (
-    <div className="bg-dark text-white min-vh-100 d-flex flex-column" style={{ height: "100vh", overflow: "hidden", paddingBottom: "0" }}>
+    <div className="bg-dark text-white" style={{ height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-      <div className="position-sticky top-0 bg-dark z-3 px-2 px-sm-3 py-2 shadow-sm" style={{ zIndex: 1020 }}>
+      <div className="bg-dark px-2 px-sm-3 py-2 shadow-sm flex-shrink-0" style={{ zIndex: 1020 }}>
         <div className="d-flex justify-content-between align-items-center">
           <h6 className="mb-0 text-truncate" style={{ fontSize: "14px" }}>
             Meeting: {roomId}
@@ -382,10 +382,10 @@ export default function VedioMeet() {
         </div>
       </div>
 
-      <div className="px-2 px-sm-3 mt-2 flex-grow-1" style={{ overflow: "hidden" }}>
+      <div className="px-2 px-sm-3 mt-2 flex-grow-1" style={{ overflow: "hidden", minHeight: 0 }}>
         <div className={getVideoGridClass()}>
           {/* local video */}
-          <div className="position-relative rounded shadow h-100 w-100">
+          <div className="position-relative rounded shadow" style={{ height: "100%", width: "100%", minHeight: 0 }}>
             {stream ? (
               <VideoPlayer
                 stream={stream}
@@ -410,7 +410,7 @@ export default function VedioMeet() {
 
           {/* Remote Video */}
           {remoteStream && (
-            <div className="position-relative rounded shadow h-100 w-100">
+            <div className="position-relative rounded shadow" style={{ height: "100%", width: "100%", minHeight: 0 }}>
               <VideoPlayer
                 stream={remoteStream}
                 muted={false}
@@ -427,7 +427,7 @@ export default function VedioMeet() {
 
           {/* Waiting State */}
           {!remoteStream && participants.length > 1 && (
-            <div className="d-flex align-items-center justify-content-center h-100 bg-secondary rounded shadow w-100">
+            <div className="d-flex align-items-center justify-content-center h-100 bg-secondary rounded shadow w-100" style={{ minHeight: 0 }}>
               <div className="text-center">
                 <div className="spinner-grow text-light mb-2" role="status">
                   <span className="visually-hidden">Waiting...</span>
@@ -557,7 +557,7 @@ export default function VedioMeet() {
       )}
 
       {/* Control Buttons */}
-      <div className="p-3 bg-dark" style={{ zIndex: 1020 }}>
+      <div className="p-3 bg-dark flex-shrink-0" style={{ zIndex: 1020 }}>
         <div className="d-flex justify-content-center gap-3">
           <button
             onClick={toggleVideo}
@@ -590,12 +590,49 @@ export default function VedioMeet() {
           <small className="text-danger">End</small>
         </div>
       </div>
+
       <style jsx>{`
+        .video-grid {
+          display: grid;
+          gap: 12px;
+          width: 100%;
+          height: 100%;
+        }
+        
+        .video-grid.one {
+          grid-template-columns: 1fr;
+          grid-template-rows: 1fr;
+        }
+        
+        .video-grid.two {
+          grid-template-columns: repeat(2, 1fr);
+          grid-template-rows: 1fr;
+        }
+        
+        .video-grid.multi {
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          grid-auto-rows: minmax(300px, 1fr);
+        }
+        
+        .video-grid > div {
+          min-width: 0;
+          min-height: 0;
+          overflow: hidden;
+          border-radius: 8px;
+          position: relative;
+        }
+        
+        /* Tablet Screens */
+        @media (min-width: 768px) and (max-width: 991px) {
           .video-grid {
-            display: grid;
-            gap: 12px;
-            width: 100%;
-            height: calc(100vh - 160px); /* Use full available height */
+            gap: 10px;
+          }
+        }
+        
+        /* Mobile Screens */
+        @media (max-width: 767px) {
+          .video-grid {
+            gap: 8px;
           }
           
           .video-grid.one {
@@ -603,153 +640,27 @@ export default function VedioMeet() {
             grid-template-rows: 1fr;
           }
           
-          .video-grid.one > div {
-            height: 100%;
-            max-height: calc(100vh - 180px);
-          }
-          
           .video-grid.two {
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: 1fr;
-          }
-          
-          .video-grid.two > div {
-            height: 100%;
-            max-height: calc(100vh - 180px);
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(2, 1fr);
+            gap: 8px;
           }
           
           .video-grid.multi {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            grid-auto-rows: 1fr;
+            grid-template-columns: 1fr;
+            gap: 12px;
           }
-          
-          .video-grid > div {
-            min-width: 0;
-            overflow: hidden;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-          }
+        }
         
-          /* Desktop Large Screens */
-          @media (min-width: 1200px) {
-            .video-grid {
-              height: calc(100vh - 160px);
-            }
-            .video-grid.one > div,
-            .video-grid.two > div {
-              max-height: calc(100vh - 180px);
-            }
+        @keyframes slideUp {
+          from {
+            transform: translateY(100%);
           }
-        
-          /* Desktop Medium Screens */
-          @media (min-width: 992px) and (max-width: 1199px) {
-            .video-grid {
-              height: calc(100vh - 160px);
-            }
-            .video-grid.one > div,
-            .video-grid.two > div {
-              max-height: calc(100vh - 180px);
-            }
+          to {
+            transform: translateY(0);
           }
-        
-          /* Tablet Screens */
-          @media (min-width: 768px) and (max-width: 991px) {
-            .video-grid {
-              height: calc(100vh - 150px);
-              gap: 10px;
-            }
-            .video-grid.two {
-              grid-template-columns: repeat(2, 1fr);
-            }
-            .video-grid.one > div,
-            .video-grid.two > div {
-              max-height: calc(100vh - 170px);
-            }
-          }
-        
-          /* Mobile Screens */
-          @media (max-width: 767px) {
-            .video-grid {
-              height: auto;
-              min-height: auto;
-              gap: 8px;
-            }
-            
-            .video-grid.one {
-              grid-template-columns: 1fr;
-              height: 60vh;
-            }
-            
-            .video-grid.one > div {
-              height: 60vh;
-              max-height: 60vh;
-            }
-            
-            .video-grid.two {
-              grid-template-columns: 1fr;
-              grid-template-rows: repeat(2, 1fr);
-              height: auto;
-              min-height: 80vh;
-            }
-            
-            .video-grid.two > div {
-              height: 40vh;
-              min-height: 250px;
-              max-height: 45vh;
-            }
-            
-            .video-grid.multi {
-              grid-template-columns: 1fr;
-              gap: 12px;
-            }
-          }
-        
-          /* Small Mobile Screens */
-          @media (max-width: 480px) {
-            .video-grid.one {
-              height: 55vh;
-            }
-            
-            .video-grid.one > div {
-              height: 55vh;
-              max-height: 55vh;
-            }
-            
-            .video-grid.two > div {
-              height: 35vh;
-              min-height: 200px;
-              max-height: 40vh;
-            }
-          }
-          
-          /* Landscape mode fix for laptop/desktop */
-          @media (min-width: 768px) {
-            .video-grid.two > div {
-              overflow-y: auto; /* Allow scroll if content overflows */
-            }
-            
-            /* Ensure VideoPlayer fills the container */
-            .video-grid.two > div > div {
-              height: 100% !important;
-              min-height: 100% !important;
-            }
-          }
-          
-          @keyframes slideUp {
-            from {
-              transform: translateY(100%);
-            }
-            to {
-              transform: translateY(0);
-            }
-          }
-        
-          .z-3 {
-            z-index: 1030;
-          }
-        `}</style>
+        }
+      `}</style>
     </div>
   );
 }
