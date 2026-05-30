@@ -403,7 +403,7 @@ export default function VedioMeet() {
                 </div>
               </div>
             )}
-            <div className="position-absolute bg-dark bg-opacity-75 px-2 py-1 rounded small" style={{ bottom: "10px", left: "10px", zIndex: 2 }}>
+            <div className="position-absolute bg-dark bg-opacity-75 px-2 py-1 rounded small" style={{ bottom: "12px", left: "12px", zIndex: 2, maxWidth: "calc(100% - 24px)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {name} (You) {!audioOn && "🔇"} {!videoOn && "📹"}
             </div>
           </div>
@@ -417,10 +417,10 @@ export default function VedioMeet() {
                 audio={remoteMedia.audio}
                 video={remoteMedia.video}
               />
-              <div className="position-absolute bg-dark bg-opacity-75 px-2 py-1 rounded small" style={{ bottom: "10px", left: "10px", zIndex: 2 }}>
-                {otherUser?.name || "Other User"}
-                {!remoteMedia.audio && " 🔇"}
-                {!remoteMedia.video && " 📹"}
+              <div className="position-absolute bg-dark bg-opacity-75 px-2 py-1 rounded small" style={{ bottom: "12px", left: "12px", zIndex: 2, maxWidth: "calc(100% - 24px)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {otherUser?.name || "Other User"} 
+                {!remoteMedia.audio && "🔇"} 
+                {!remoteMedia.video && "📹"}
               </div>
             </div>
           )}
