@@ -31,7 +31,6 @@ export default function SignIn() {
       <div className="row my-4 py-5 d-flex align-items-center justify-content-center fade-in">
         <div className="col-lg-8 d-flex align-items-center justify-content-center">
 
-          {/* GLASS FORM */}
           <div className="w-75 glass-form position-relative">
 
             <h2 className="mb-5 fw-bold text-center" style={style}>
@@ -84,7 +83,6 @@ export default function SignIn() {
               </button>
             </form>
 
-            {/* ALREADY HAVE ACCOUNT */}
             <div className="existing-account">
               <span>Already have an account?</span>
               <Link to="/login" className="mx-3">Log In</Link>

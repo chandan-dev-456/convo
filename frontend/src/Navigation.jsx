@@ -10,8 +10,6 @@ export default function Navigation() {
   const userData = context?.userData;
   const handleLogout = context?.handleLogout;
   
-  // console.log("NAVBAR USER:", userData);
-  // console.log("FULL CONTEXT VALUE:", context);
   return (
 
     <nav className="container-fluid navbar navbar-expand-lg navbar-shadow px-3 ">

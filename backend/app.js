@@ -14,7 +14,7 @@ const server = createServer(app);
 connectToSocket(server);
 
 app.use(cors({
-  origin: true,
+  origin: [process.env.CLIENT_URL],
   credentials: true
 }));
 

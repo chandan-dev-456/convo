@@ -382,10 +382,9 @@ export default function VedioMeet() {
         </div>
       </div>
 
-      {/* main content */}
       <div className="px-2 px-sm-3 mt-2">
         <div className={getVideoGridClass()}>
-          {/* Local Video */}
+          {/* local video */}
           <div className="position-relative rounded shadow h-100">
             {stream ? (
               <VideoPlayer
@@ -592,172 +591,155 @@ export default function VedioMeet() {
         </div>
       </div>
       <style jsx>{`
-  .video-grid {
-    display: grid;
-    gap: 12px;
-    width: 100%;
-  }
+          .video-grid {
+            display: grid;
+            gap: 12px;
+            width: 100%;
+          }
+          .video-grid.one {
+            grid-template-columns: 1fr;
+            min-height: 400px;
+            max-height: 70vh;
+          }
+          .video-grid.one > div {
+            min-height: 400px;
+            max-height: 70vh;
+          }
+          .video-grid.two {
+            grid-template-columns: repeat(2, 1fr);
+            min-height: 65vh;
+          }
+          .video-grid.two > div {
+            min-height: 65vh;
+          }
+          .video-grid.multi {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          }
+          .video-grid > div {
+            min-width: 0;
+            overflow: hidden;
+            border-radius: 8px;
+          }
 
-  .video-grid.one {
-  grid-template-columns: 1fr;
-  min-height: 400px;
-  max-height: 70vh;
-}
+          /* Desktop Large Screens */
 
-.video-grid.one > div {
-  min-height: 400px;
-  max-height: 70vh;
-}
+          @media (min-width: 1200px) {
+            .video-grid.one {
+              grid-template-columns: 1fr;
+              min-height: 400px;
+              max-height: 70vh;
+            }
+            .video-grid.one > div {
+              min-height: 400px;
+              max-height: 70vh;
+            }
+            .video-grid.two {
+              min-height: 70vh;
+            }
+            .video-grid.two > div {
+              min-height: 70vh;
+            }
+          }
 
-  .video-grid.two {
-    grid-template-columns: repeat(2, 1fr);
-    min-height: 65vh;
-  }
+          /* Desktop Medium Screens */
 
-  .video-grid.two > div {
-    min-height: 65vh;
-  }
+          @media (min-width: 992px) and (max-width: 1199px) {
+            .video-grid.one {
+              grid-template-columns: 1fr;
+              min-height: 400px;
+              max-height: 70vh;
+            }
+            .video-grid.one > div {
+              min-height: 400px;
+              max-height: 70vh;
+            }
+            .video-grid.two {
+              min-height: 65vh;
+            }
+            .video-grid.two > div {
+              min-height: 65vh;
+            }
+          }
 
-  .video-grid.multi {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
+          /* Tablet Screens */
+          @media (min-width: 768px) and (max-width: 991px) {
+              .video-grid.one {
+              grid-template-columns: 1fr;
+              min-height: 400px;
+              max-height: 70vh;
+            }
+            .video-grid.one > div {
+              min-height: 400px;
+              max-height: 70vh;
+            }
+            .video-grid.two {
+              min-height: 50vh;
+            }
+            
+            .video-grid.two > div {
+              min-height: 50vh;
+            }
+            
+            .video-grid {
+              gap: 10px;
+            }
+          }
 
-  .video-grid > div {
-    min-width: 0;
-    overflow: hidden;
-    border-radius: 8px;
-  }
+          /* Mobile Screens */
+          @media (max-width: 767px) {
+              .video-grid.one {
+              grid-template-columns: 1fr;
+              min-height: 400px;
+              max-height: 70vh;
+            }
+            .video-grid.one > div {
+              min-height: 400px;
+              max-height: 70vh;
+            }
+            .video-grid.two {
+              grid-template-columns: 1fr;
+              grid-template-rows: repeat(2, 1fr);
+              min-height: auto;
+              gap: 8px;
+            }
+            .video-grid.two > div {
+              min-height: 40vh;
+            }
+            .video-grid {
+              gap: 8px;
+            }
+          }
 
-  /* Desktop Large Screens */
-  @media (min-width: 1200px) {
-    .video-grid.one {
-  grid-template-columns: 1fr;
-  min-height: 400px;
-  max-height: 70vh;
-}
+          /* Small Mobile Screens */
+          @media (max-width: 480px) {
+            .video-grid.one {
+          grid-template-columns: 1fr;
+          min-height: 400px;
+          max-height: 70vh;
+        }
 
-.video-grid.one > div {
-  min-height: 400px;
-  max-height: 70vh;
-}
-    
-    .video-grid.two {
-      min-height: 70vh;
-    }
-    
-    .video-grid.two > div {
-      min-height: 70vh;
-    }
-  }
+        .video-grid.one > div {
+            min-height: 400px;
+            max-height: 70vh;
+          }
+            
+            .video-grid.two > div {
+              min-height: 35vh;
+            }
+        }
+        @keyframes slideUp {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
 
-  /* Desktop Medium Screens */
-  @media (min-width: 992px) and (max-width: 1199px) {
-    .video-grid.one {
-  grid-template-columns: 1fr;
-  min-height: 400px;
-  max-height: 70vh;
-}
-
-.video-grid.one > div {
-  min-height: 400px;
-  max-height: 70vh;
-}
-    
-    .video-grid.two {
-      min-height: 65vh;
-    }
-    
-    .video-grid.two > div {
-      min-height: 65vh;
-    }
-  }
-
-  /* Tablet Screens */
-  @media (min-width: 768px) and (max-width: 991px) {
-    .video-grid.one {
-  grid-template-columns: 1fr;
-  min-height: 400px;
-  max-height: 70vh;
-}
-
-.video-grid.one > div {
-  min-height: 400px;
-  max-height: 70vh;
-}
-    
-    .video-grid.two {
-      min-height: 50vh;
-    }
-    
-    .video-grid.two > div {
-      min-height: 50vh;
-    }
-    
-    .video-grid {
-      gap: 10px;
-    }
-  }
-
-  /* Mobile Screens */
-  @media (max-width: 767px) {
-    .video-grid.one {
-  grid-template-columns: 1fr;
-  min-height: 400px;
-  max-height: 70vh;
-}
-
-.video-grid.one > div {
-  min-height: 400px;
-  max-height: 70vh;
-}
-    
-    .video-grid.two {
-      grid-template-columns: 1fr;
-      grid-template-rows: repeat(2, 1fr);
-      min-height: auto;
-      gap: 8px;
-    }
-    
-    .video-grid.two > div {
-      min-height: 40vh;
-    }
-    
-    .video-grid {
-      gap: 8px;
-    }
-  }
-
-  /* Small Mobile Screens */
-  @media (max-width: 480px) {
-    .video-grid.one {
-  grid-template-columns: 1fr;
-  min-height: 400px;
-  max-height: 70vh;
-}
-
-.video-grid.one > div {
-  min-height: 400px;
-  max-height: 70vh;
-}
-    
-    .video-grid.two > div {
-      min-height: 35vh;
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  .z-3 {
-    z-index: 1030;
-  }
-`}</style>
+        .z-3 {
+          z-index: 1030;
+        }
+      `}</style>
     </div>
   );
 }

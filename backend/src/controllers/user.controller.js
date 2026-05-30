@@ -29,8 +29,6 @@ const signup = async (req, res) => {
   try {
     const { name, username, password } = req.body;
 
-    // const normalizedUsername = username.toLowerCase().trim();
-
     const existingUser = await User.findOne({username});
 
     if (existingUser) {
