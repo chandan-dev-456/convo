@@ -9,7 +9,7 @@ export default function VideoPlayer({ stream, muted, audio, video }) {
     }, [stream, video]);
 
     return (
-        <div className="position-relative rounded shadow h-100" style={{ height: "100%" }}>
+        <div className="position-relative rounded shadow h-100 w-100" style={{ height: "100%", width: "100%", minHeight: "inherit" }}>
             {video ? (
                 <video
                     ref={videoRef}
@@ -18,13 +18,14 @@ export default function VideoPlayer({ stream, muted, audio, video }) {
                     muted={muted}
                     className="w-100 h-100"
                     style={{
-                        objectFit: "contain",
-                        backgroundColor: "#000",
+                        objectFit: "cover",
                         transform: "scaleX(-1)",
+                        width: "100%",
+                        height: "100%"
                     }}
                 />
             ) : (
-                <div className="d-flex justify-content-center align-items-center h-100 text-white bg-dark">
+                <div className="d-flex justify-content-center align-items-center h-100 w-100 text-white bg-dark" style={{ minHeight: "inherit" }}>
                     <div className="text-center">
                         <span style={{ fontSize: "2rem" }}>📹</span>
                         <p className="mb-0 small text-muted mt-1">Camera Off</p>
@@ -51,6 +52,5 @@ export default function VideoPlayer({ stream, muted, audio, video }) {
             )}
 
         </div>
-
     );
 }
