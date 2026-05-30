@@ -703,7 +703,8 @@ export default function VedioMeet() {
               gap: 8px;
             }
             .video-grid.two > div {
-              min-height: 40vh;
+              height: 30vh;
+              min-height: 220px;
             }
             .video-grid {
               gap: 8px;
