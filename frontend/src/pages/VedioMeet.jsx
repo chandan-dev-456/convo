@@ -557,7 +557,7 @@ export default function VedioMeet() {
       )}
 
       {/* Control Buttons */}
-      <div className="position-fixed bottom-0 start-0 end-0 p-3" style={{ zIndex: 1020 }}>
+      <div className="p-3 bg-dark" style={{ zIndex: 1020 }}>
         <div className="d-flex justify-content-center gap-3">
           <button
             onClick={toggleVideo}
