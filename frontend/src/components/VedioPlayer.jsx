@@ -67,26 +67,6 @@ export default function VideoPlayer({ stream, muted, audio, video }) {
                     🔇
                 </div>
             )}
-            
-            {/* Small audio indicator in corner when camera is on */}
-            {!audio && video && (
-                <div
-                    className="position-absolute top-0 end-0 m-2 p-1 bg-dark bg-opacity-75 rounded-circle"
-                    style={{
-                        width: "28px",
-                        height: "28px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "14px",
-                        backdropFilter: "blur(4px)",
-                        zIndex: 1,
-                        pointerEvents: "none"
-                    }}
-                >
-                    🔇
-                </div>
-            )}
         </div>
     );
 }
