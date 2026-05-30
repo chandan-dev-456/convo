@@ -6,7 +6,7 @@ import { useContext, useEffect } from "react";
 export const AuthContext = createContext(null);
 
 const client = axios.create({
-  baseURL: "http://localhost:8000/api/v1",
+  baseURL: `${import.meta.env.VITE_API_URL}/api/v1`,
   withCredentials: true
 });
 
