@@ -385,7 +385,7 @@ export default function VedioMeet() {
       <div className="px-2 px-sm-3 mt-2">
         <div className={getVideoGridClass()}>
           {/* local video */}
-          <div className="position-relative rounded shadow h-100">
+          <div className="position-relative rounded shadow h-100 w-100">
             {stream ? (
               <VideoPlayer
                 stream={stream}
@@ -394,7 +394,7 @@ export default function VedioMeet() {
                 video={videoOn}
               />
             ) : (
-              <div className="d-flex align-items-center justify-content-center h-100 bg-dark rounded">
+              <div className="d-flex align-items-center justify-content-center h-100 bg-dark rounded w-100">
                 <div className="text-center">
                   <div className="spinner-border text-light mb-2" role="status">
                     <span className="visually-hidden">Loading...</span>
@@ -410,7 +410,7 @@ export default function VedioMeet() {
 
           {/* Remote Video */}
           {remoteStream && (
-            <div className="position-relative rounded shadow h-100">
+            <div className="position-relative rounded shadow h-100 w-100">
               <VideoPlayer
                 stream={remoteStream}
                 muted={false}
@@ -427,7 +427,7 @@ export default function VedioMeet() {
 
           {/* Waiting State */}
           {!remoteStream && participants.length > 1 && (
-            <div className="d-flex align-items-center justify-content-center h-100 bg-secondary rounded shadow">
+            <div className="d-flex align-items-center justify-content-center h-100 bg-secondary rounded shadow w-100">
               <div className="text-center">
                 <div className="spinner-grow text-light mb-2" role="status">
                   <span className="visually-hidden">Waiting...</span>
@@ -604,6 +604,7 @@ export default function VedioMeet() {
           .video-grid.one > div {
             min-height: 400px;
             max-height: 70vh;
+            height: 100%;
           }
           .video-grid.two {
             grid-template-columns: repeat(2, 1fr);
@@ -611,6 +612,7 @@ export default function VedioMeet() {
           }
           .video-grid.two > div {
             min-height: 65vh;
+            height: 100%;
           }
           .video-grid.multi {
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -619,6 +621,9 @@ export default function VedioMeet() {
             min-width: 0;
             overflow: hidden;
             border-radius: 8px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
           }
 
           /* Desktop Large Screens */
@@ -632,12 +637,14 @@ export default function VedioMeet() {
             .video-grid.one > div {
               min-height: 400px;
               max-height: 70vh;
+              height: 100%;
             }
             .video-grid.two {
               min-height: 70vh;
             }
             .video-grid.two > div {
               min-height: 70vh;
+              height: 100%;
             }
           }
 
@@ -652,12 +659,14 @@ export default function VedioMeet() {
             .video-grid.one > div {
               min-height: 400px;
               max-height: 70vh;
+              height: 100%;
             }
             .video-grid.two {
               min-height: 65vh;
             }
             .video-grid.two > div {
               min-height: 65vh;
+              height: 100%;
             }
           }
 
@@ -671,6 +680,7 @@ export default function VedioMeet() {
             .video-grid.one > div {
               min-height: 400px;
               max-height: 70vh;
+              height: 100%;
             }
             .video-grid.two {
               min-height: 50vh;
@@ -678,6 +688,7 @@ export default function VedioMeet() {
             
             .video-grid.two > div {
               min-height: 50vh;
+              height: 100%;
             }
             
             .video-grid {
@@ -695,16 +706,18 @@ export default function VedioMeet() {
             .video-grid.one > div {
               min-height: 400px;
               max-height: 70vh;
+              height: 100%;
             }
             .video-grid.two {
               grid-template-columns: 1fr;
-              grid-template-rows: repeat(2, 1fr);
+              grid-template-rows: auto;
               min-height: auto;
               gap: 8px;
             }
             .video-grid.two > div {
-              height: 30vh;
-              min-height: 220px;
+              height: auto;
+              min-height: 300px;
+              max-height: 45vh;
             }
             .video-grid {
               gap: 8px;
@@ -715,18 +728,20 @@ export default function VedioMeet() {
           @media (max-width: 480px) {
             .video-grid.one {
               grid-template-columns: 1fr;
-              min-height: 400px;
-              max-height: 70vh;
+              min-height: 350px;
+              max-height: 60vh;
             }
   
           .video-grid.one > div {
-              min-height: 400px;
-              max-height: 70vh;
+              min-height: 350px;
+              max-height: 60vh;
+              height: 100%;
             }
             
            .video-grid.two > div {
-              height: 28vh;
-              min-height: 180px;
+              height: auto;
+              min-height: 250px;
+              max-height: 40vh;
             }
         }
         @keyframes slideUp {
