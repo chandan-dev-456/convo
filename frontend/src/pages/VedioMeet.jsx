@@ -360,7 +360,7 @@ export default function VedioMeet() {
   };
 
   return (
-    <div className="bg-dark text-white min-vh-100" style={{ paddingBottom: "90px" }}>
+    <div className="bg-dark text-white min-vh-100 d-flex flex-column" style={{ height: "100vh", overflow: "hidden", paddingBottom: "0" }}>
 
       <div className="position-sticky top-0 bg-dark z-3 px-2 px-sm-3 py-2 shadow-sm" style={{ zIndex: 1020 }}>
         <div className="d-flex justify-content-between align-items-center">
@@ -595,168 +595,161 @@ export default function VedioMeet() {
             display: grid;
             gap: 12px;
             width: 100%;
+            height: calc(100vh - 160px); /* Use full available height */
           }
+          
           .video-grid.one {
             grid-template-columns: 1fr;
-            min-height: 400px;
-            max-height: 70vh;
+            grid-template-rows: 1fr;
           }
+          
           .video-grid.one > div {
-            min-height: 400px;
-            max-height: 70vh;
             height: 100%;
+            max-height: calc(100vh - 180px);
           }
+          
           .video-grid.two {
             grid-template-columns: repeat(2, 1fr);
-            min-height: 65vh;
+            grid-template-rows: 1fr;
           }
+          
           .video-grid.two > div {
-            min-height: 65vh;
             height: 100%;
+            max-height: calc(100vh - 180px);
           }
+          
           .video-grid.multi {
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-auto-rows: 1fr;
           }
+          
           .video-grid > div {
             min-width: 0;
             overflow: hidden;
             border-radius: 8px;
-            height: 100%;
             display: flex;
             flex-direction: column;
+            position: relative;
           }
-
+        
           /* Desktop Large Screens */
-
           @media (min-width: 1200px) {
-            .video-grid.one {
-              grid-template-columns: 1fr;
-              min-height: 400px;
-              max-height: 70vh;
+            .video-grid {
+              height: calc(100vh - 160px);
             }
-            .video-grid.one > div {
-              min-height: 400px;
-              max-height: 70vh;
-              height: 100%;
-            }
-            .video-grid.two {
-              min-height: 70vh;
-            }
+            .video-grid.one > div,
             .video-grid.two > div {
-              min-height: 70vh;
-              height: 100%;
+              max-height: calc(100vh - 180px);
             }
           }
-
+        
           /* Desktop Medium Screens */
-
           @media (min-width: 992px) and (max-width: 1199px) {
-            .video-grid.one {
-              grid-template-columns: 1fr;
-              min-height: 400px;
-              max-height: 70vh;
+            .video-grid {
+              height: calc(100vh - 160px);
             }
-            .video-grid.one > div {
-              min-height: 400px;
-              max-height: 70vh;
-              height: 100%;
-            }
-            .video-grid.two {
-              min-height: 65vh;
-            }
+            .video-grid.one > div,
             .video-grid.two > div {
-              min-height: 65vh;
-              height: 100%;
+              max-height: calc(100vh - 180px);
             }
           }
-
+        
           /* Tablet Screens */
           @media (min-width: 768px) and (max-width: 991px) {
-              .video-grid.one {
-              grid-template-columns: 1fr;
-              min-height: 400px;
-              max-height: 70vh;
-            }
-            .video-grid.one > div {
-              min-height: 400px;
-              max-height: 70vh;
-              height: 100%;
-            }
-            .video-grid.two {
-              min-height: 50vh;
-            }
-            
-            .video-grid.two > div {
-              min-height: 50vh;
-              height: 100%;
-            }
-            
             .video-grid {
+              height: calc(100vh - 150px);
               gap: 10px;
             }
+            .video-grid.two {
+              grid-template-columns: repeat(2, 1fr);
+            }
+            .video-grid.one > div,
+            .video-grid.two > div {
+              max-height: calc(100vh - 170px);
+            }
           }
-
+        
           /* Mobile Screens */
           @media (max-width: 767px) {
-              .video-grid.one {
-              grid-template-columns: 1fr;
-              min-height: 400px;
-              max-height: 70vh;
-            }
-            .video-grid.one > div {
-              min-height: 400px;
-              max-height: 70vh;
-              height: 100%;
-            }
-            .video-grid.two {
-              grid-template-columns: 1fr;
-              grid-template-rows: auto;
+            .video-grid {
+              height: auto;
               min-height: auto;
               gap: 8px;
             }
-            .video-grid.two > div {
+            
+            .video-grid.one {
+              grid-template-columns: 1fr;
+              height: 60vh;
+            }
+            
+            .video-grid.one > div {
+              height: 60vh;
+              max-height: 60vh;
+            }
+            
+            .video-grid.two {
+              grid-template-columns: 1fr;
+              grid-template-rows: repeat(2, 1fr);
               height: auto;
-              min-height: 300px;
+              min-height: 80vh;
+            }
+            
+            .video-grid.two > div {
+              height: 40vh;
+              min-height: 250px;
               max-height: 45vh;
             }
-            .video-grid {
-              gap: 8px;
+            
+            .video-grid.multi {
+              grid-template-columns: 1fr;
+              gap: 12px;
             }
           }
-
+        
           /* Small Mobile Screens */
           @media (max-width: 480px) {
             .video-grid.one {
-              grid-template-columns: 1fr;
-              min-height: 350px;
-              max-height: 60vh;
-            }
-  
-          .video-grid.one > div {
-              min-height: 350px;
-              max-height: 60vh;
-              height: 100%;
+              height: 55vh;
             }
             
-           .video-grid.two > div {
-              height: auto;
-              min-height: 250px;
+            .video-grid.one > div {
+              height: 55vh;
+              max-height: 55vh;
+            }
+            
+            .video-grid.two > div {
+              height: 35vh;
+              min-height: 200px;
               max-height: 40vh;
             }
-        }
-        @keyframes slideUp {
-          from {
-            transform: translateY(100%);
           }
-          to {
-            transform: translateY(0);
+          
+          /* Landscape mode fix for laptop/desktop */
+          @media (min-width: 768px) {
+            .video-grid.two > div {
+              overflow-y: auto; /* Allow scroll if content overflows */
+            }
+            
+            /* Ensure VideoPlayer fills the container */
+            .video-grid.two > div > div {
+              height: 100% !important;
+              min-height: 100% !important;
+            }
           }
-        }
-
-        .z-3 {
-          z-index: 1030;
-        }
-      `}</style>
+          
+          @keyframes slideUp {
+            from {
+              transform: translateY(100%);
+            }
+            to {
+              transform: translateY(0);
+            }
+          }
+        
+          .z-3 {
+            z-index: 1030;
+          }
+        `}</style>
     </div>
   );
 }
