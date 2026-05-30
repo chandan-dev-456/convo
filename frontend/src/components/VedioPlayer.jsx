@@ -18,7 +18,8 @@ export default function VideoPlayer({ stream, muted, audio, video }) {
                     muted={muted}
                     className="w-100 h-100"
                     style={{
-                        objectFit: "cover",
+                        objectFit: "contain",
+                        backgroundColor: "#000",
                         transform: "scaleX(-1)",
                     }}
                 />
